@@ -1,0 +1,4 @@
+services:
+  gil_app:
+    build:
+      context: .

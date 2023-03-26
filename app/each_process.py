@@ -1,12 +1,12 @@
 from multiprocessing import Queue
 
+from app.custom_thread_with_results import CustomThreadWithResult
+from app.each_thread import each_thread
 from configurator import logger
-from custom_thread_with_results import CustomThreadWithResult
-from each_thread import each_thread
 
 
-def each_process(links_to_be_processed: list, queue: Queue):
-    thread_chunk_size = len(links_to_be_processed) // 5  # Calculate chunk size for threads
+def each_process(links_to_be_processed: list, queue: Queue, num_of_threads: int):
+    thread_chunk_size = len(links_to_be_processed) // num_of_threads  # Calculate chunk size for threads
     next_step = 0
     threads_in_process = []
     thread_responses = []
