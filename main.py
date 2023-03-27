@@ -10,8 +10,6 @@ import argparse
 
 
 class Application:
-    links_to_be_processed = []
-    list_of_processes = []
     queue = multiprocessing.Queue()
     results = []
     start_time = time.time()
@@ -20,8 +18,7 @@ class Application:
         self.proc_chunk_size = proc_chunk_size
         self.number_of_links = number_of_links
         self.num_of_threads = num_of_threads
-        for i in range(0, self.number_of_links):
-            self.links_to_be_processed.append({"id": i, "url": url})
+        self.links_to_be_processed = [{"id": id, "url": url} for id in range(self.number_of_links)]
 
         logger.info(
             f"CPU kernels: {number_of_cores} "
@@ -31,14 +28,11 @@ class Application:
 
     def run_app_processes(self):
         next_batch_step = 0
-        for i in range(number_of_cores):
+        for core in range(number_of_cores):
             batch_of_links = self.links_to_be_processed[next_batch_step:next_batch_step + chunk_size]
             next_batch_step += chunk_size
-            p = Process(target=each_process, args=(batch_of_links, self.queue, self.num_of_threads), name=f"proc {i}")
-            p.start()
-            self.list_of_processes.append(p)
-
-        for proc in self.list_of_processes:
+            proc = Process(target=each_process, args=(batch_of_links, self.queue, self.num_of_threads), name=f"proc {core}")
+            proc.start()
             proc.join()
 
     def results_processing(self):
