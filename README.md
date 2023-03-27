@@ -22,6 +22,16 @@ after that just run:
   docker-compose up --build
 ```
 
+The program uses the following custom arguments:    
+`number_of_threads`. Default value - 1  
+`num_of_links`. Default value - 16  
+`url`. Default value - "https://edition.cnn.com/"    
+
+The user can change them by specifying arguments at startup  
+```
+python main.py --url https://google.com/
+```
+
 # Running Tests
 ```shell
     pytest
