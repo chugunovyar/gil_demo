@@ -17,10 +17,13 @@ def each_process(links_to_be_processed: list, queue: Queue, num_of_threads: int)
         thread.join()
         thread_responses = thread_responses + thread.result
         next_step = next_step + thread_chunk_size
-        logger.debug(
-            f" with thread {thread.name} "
-            f"size {chunk_of_links.__len__()} with first element {chunk_of_links[0]} "
-            f"with last element {chunk_of_links[-1]}"
-        )
+        try:
+            logger.debug(
+                f" with thread {thread.name} "
+                f"size {chunk_of_links.__len__()} with first element {chunk_of_links[0]} "
+                f"with last element {chunk_of_links[-1]}"
+            )
+        except IndexError:
+            print("number_of_threads can't be less then chunk_size")
     thread_responses = sorted(thread_responses, key=lambda k: k['id'])
     queue.put_nowait(thread_responses)

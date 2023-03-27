@@ -49,7 +49,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--number_of_threads',
         type=int,
-        default=1,
+        default=5,
         help='количество потоков',
     )
     parser.add_argument(
