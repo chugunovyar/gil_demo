@@ -3,8 +3,10 @@ import multiprocessing
 import time
 from multiprocessing import Process
 
-from configurator import logger, number_of_cores, num_of_links, chunk_size, url, number_of_threads
+from configurator import logger, number_of_cores
 from app.each_process import each_process
+
+import argparse
 
 
 class Application:
@@ -14,7 +16,7 @@ class Application:
     results = []
     start_time = time.time()
 
-    def __init__(self, number_of_links: int, proc_chunk_size: int, num_of_threads=number_of_threads):
+    def __init__(self, number_of_links: int, proc_chunk_size: int, num_of_threads, url):
         self.proc_chunk_size = proc_chunk_size
         self.number_of_links = number_of_links
         self.num_of_threads = num_of_threads
@@ -47,6 +49,35 @@ class Application:
 
 
 if __name__ == '__main__':
-    app = Application(number_of_links=num_of_links, proc_chunk_size=chunk_size, num_of_threads=number_of_threads)
+    parser = argparse.ArgumentParser(
+        description='Программа для обработки ссылок'
+    )
+    parser.add_argument(
+        '--number_of_threads',
+        type=int,
+        default=1,
+        help='количество потоков',
+    )
+    parser.add_argument(
+        '--num_of_links',
+        type=int,
+        default=16,
+        help='количество ссылок',
+    )
+    parser.add_argument(
+        '--url',
+        default="https://edition.cnn.com/",
+        help='url адрес',
+    )
+    args = parser.parse_args()
+
+    chunk_size = args.num_of_links // number_of_cores
+
+    app = Application(
+        number_of_links=args.num_of_links,
+        proc_chunk_size=chunk_size,
+        num_of_threads=args.number_of_threads,
+        url=args.url,
+    )
     app.run_app_processes()
     app.results_processing()
